@@ -6,10 +6,11 @@ This shell tool was created for the purpose of fulfilling [this very challenge](
 The tool was developed in JavaScript (NodeJS, ECMAScript2016 - compiled with Babel). It uses the AWS JavaScript SDK and other useful NodeJS open-source tools. Although it was developed on OSX, it has been packaged with [pkg](https://www.npmjs.com/package/pkg) and runs on Windows, Linux and OSX.
 
 ## How to install
-1. Simply clone the repo onto your machine
-2. Open up a terminal (or PowerShell, or GitBash, or CIGWYN, etc.) 
-3. ```cd``` to where you clone the repository, then into the ```bin``` folder
-4. Execute the binary of your choice - command examples below.
+1. Simply go to the [release section](https://github.com/delirius325/aws-s3-analytics/releases)
+2. Download the CLI according to your OS 
+3. Open up a terminal (or PowerShell, or GitBash, or CIGWYN, etc.) 
+4. ```cd``` to where you downloaded the CLI tool
+5. Execute the binary of your choice - command examples below.
 
 ## Commands
 ### Credentials
