@@ -28,6 +28,18 @@ const AWS = new awsHelper();
 let response = null;
 let options = {};
 
+function promptCredentials() {
+  logger.info('If your credentials are already set as environment variables (ACCESS_KEY_ID & SECRET_ACCESS_KEY), just leave the prompt empty');
+  options.accessKeyId = readline.question('Your AWS access key ID: ');
+  options.secretAccessKey = readline.question('Your AWS secret access key: ');
+  console.clear();
+  response = AWS.setCredentials(options).then(response => logger.info('Successfully saved credentials'));
+}
+
+if(!AWS.checkForCredentialsFile()) {
+  promptCredentials();
+}
+
 try {
   switch(command) {
     case 'show': 
@@ -46,9 +58,7 @@ try {
       });
       break;
     case 'creds':
-      options.accessKeyId = readline.question('Your AWS access key ID: ');
-      options.secretAccessKey = readline.question('Your AWS secret access key:');
-      response = AWS.setCredentials(options).then(response => logger.info('Successfully saved credentials'));
+      setCredentials();
       break;
     case 'objects':
       response = AWS.getBucketObjects({Bucket: argv.bucket}, argv.storage, argv.sort, argv.order, argv.filter).then(objects => {
