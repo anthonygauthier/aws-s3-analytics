@@ -8,7 +8,7 @@ The tool was developed in JavaScript (NodeJS, ECMAScript2016 - compiled with Bab
 ## How to install
 1. Simply go to the [release section](https://github.com/delirius325/aws-s3-analytics/releases)
 2. Download the CLI according to your OS 
-3. Open up a terminal (or PowerShell, or GitBash, or CIGWYN, etc.) 
+3. Open up a terminal (or PowerShell, or GitBash, or CYGWIN, etc.) 
 4. ```cd``` to where you downloaded the CLI tool
 5. Execute the binary of your choice - command examples below.
 
