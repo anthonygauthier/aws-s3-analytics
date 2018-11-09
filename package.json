@@ -1,0 +1,37 @@
+{
+  "name": "aws-s3-analytics",
+  "version": "1.0.0",
+  "description": "Shell utility developed in Node.JS to analyze and get information about AWS S3 Buckets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist && export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha --exit dist/test/*.test.js",
+    "compile": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist",
+    "compileAndRun": "npm run compile && clear && node dist/app.js list",
+    "postinstall": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist"
+  },
+  "author": "Anthony Gauthier (delirius325)",
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [],
+  "dependencies": {
+    "aws-sdk": "^2.346.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-latest": "^6.24.1",
+    "bytes": "^3.0.0",
+    "console.table": "^0.10.0",
+    "fancy-log": "^1.3.2",
+    "lodash": "^4.17.11",
+    "moment": "^2.22.2",
+    "readline-sync": "^1.4.9",
+    "uuid": "^3.3.2",
+    "yargs": "^12.0.2"
+  },
+  "devDependencies": {
+    "expect": "^23.6.0",
+    "mocha": "^5.2.0"
+  }
+}
