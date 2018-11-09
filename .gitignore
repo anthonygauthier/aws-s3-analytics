@@ -78,3 +78,6 @@ typings/
 .fusebox/
 
 sandbox.js
+
+# Remove dist
+dist
