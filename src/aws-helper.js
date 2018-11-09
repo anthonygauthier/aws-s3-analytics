@@ -220,6 +220,8 @@ class awsHelper {
       if (filter && filter.trim() !== '')
         this.bucketObjects.Objects = utils.filter(this.bucketObjects.Objects, filter);
 
+      this.bucketObjects.Objects = this.bucketObjects.Objects.map(el => {el.Size = bytes(el.Size); return el;})
+
       return this.bucketObjects.Objects.sort(utils.compare(sortProp, order));
     }
   }
