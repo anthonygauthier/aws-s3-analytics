@@ -1,3 +1,7 @@
+/**
+ * This file contains all the options for the command line arguments
+ */
+
 const sortParameters = [
   "Bucket_Name",
   "Location",

@@ -7,7 +7,7 @@ The tool was developed in JavaScript (NodeJS, ECMAScript2016 - compiled with Bab
 
 ## Commands
 ### Credentials
-To be able to use the tool, you'll first have to set your credentials. This is easily done with the following command.
+To be able to use the tool, you'll first have to set your AWS credentials. This is easily done with the following command.
 ```shell
 s3-analytics creds
 
@@ -48,9 +48,9 @@ s3-analytics objects -b REQUIRED_BUCKET_NAME
 # --filter, -f : Filters the table by the specified string or regexp
 ```
 ### Help
-For additionnal help
+For additionnal help (argument choices, etc.)
 ```shell
 s3-analytics help
-#or
+# or
 s3-analytics [command] --help
 ```
