@@ -7,7 +7,8 @@
     "test": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist && export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha --exit dist/test/*.test.js",
     "compile": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist",
     "compileAndRun": "npm run compile && clear && node dist/app.js list",
-    "postinstall": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist"
+    "postinstall": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist",
+    "package": "pkg ./s3-analytics.js --out-path ./bin/"
   },
   "author": "Anthony Gauthier (delirius325)",
   "license": "MIT",

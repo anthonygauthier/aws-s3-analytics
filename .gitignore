@@ -79,5 +79,6 @@ typings/
 
 sandbox.js
 
-# Remove dist
+# Remove dist & bin
 dist
+bin
