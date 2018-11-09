@@ -98,9 +98,13 @@ class awsHelper {
         options.ContinuationToken = keys.NextContinuationToken;
         await this.getBucketInfo(options);
       }
-      const bucketLocation = await s3.getBucketLocation(options).promise();
-      // short-hand if because of AWS' secret litte trick -> https://github.com/aws/aws-sdk-net/issues/323 && beautify if lastModified is null
-      this.currentBucket.location = (bucketLocation.LocationConstraint === '') ? 'us-east-1' : bucketLocation.LocationConstraint;
+      const bucketRegion = await s3.getBucketLocation(options).promise();
+
+      /** 
+       *  short-hand if because of AWS's dirty litte secret -> https://github.com/aws/aws-sdk-net/issues/323 
+       *  && beautify if lastModified is null
+      **/
+      this.currentBucket.region = (bucketRegion.LocationConstraint === '') ? 'us-east-1' : bucketRegion.LocationConstraint;
       this.currentBucket.lastModified = (!this.currentBucket.lastModified) ? 'N/A' : this.currentBucket.lastModified;
       this.currentBucket.totalSize = bytes(this.currentBucket.totalSize);
 
@@ -180,7 +184,7 @@ class awsHelper {
       for (const bucket of response.Buckets) {
         this.currentBucket = this.resetBucket();
         const info = await this.getBucketInfo({ Bucket: bucket.Name });
-        list.push({ Bucket_Name: bucket.Name, Location: info.location, Creation_Date: bucket.CreationDate, Total_Size: info.totalSize, File_Count: info.fileCount, Last_Modified: info.lastModified });
+        list.push({ Bucket_Name: bucket.Name, Region: info.region, Creation_Date: bucket.CreationDate, Total_Size: info.totalSize, File_Count: info.fileCount, Last_Modified: info.lastModified });
       }
 
       if (filter && filter.trim() !== '')
