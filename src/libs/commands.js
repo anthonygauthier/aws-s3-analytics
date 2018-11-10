@@ -31,7 +31,6 @@ startOptions = {
 },
 endOptions = {
   describe: 'End date for the cost command',
-  choices: ["asc", "desc"],
   alias: 'e'
 },
 filterOptions = {
@@ -42,6 +41,10 @@ storageOptions = {
   describe: 'Storage type of objects to show. Defaults to "ALL".',
   choices: ["ALL", "STANDARD", "STANDARD_IA", "REDUCED_REDUNDANCY", "GLACIER", "ONEZONE_IA"],
   alias: ['t', 'type']
+},
+regionOptions = {
+  describe: 'The AWS region which you want to see information for.',
+  alias: 'r'
 };
 
 module.exports = {
@@ -51,5 +54,6 @@ module.exports = {
   startOptions,
   endOptions,
   filterOptions,
-  storageOptions
+  storageOptions,
+  regionOptions
 };
