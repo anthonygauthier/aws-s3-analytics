@@ -15,11 +15,13 @@ The tool was developed in JavaScript (NodeJS, ECMAScript2016 - compiled with Bab
 ## Commands
 ### Credentials
 To be able to use the tool, you'll first have to set your AWS credentials. This is easily done with the following command.
+
+**_NOTICE: It is possible to skip this whole process by setting the following environment variables: `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY`_**
 ```shell
 ./s3-analytics-[yourOS] creds
 
-# You will be prompted to enter your access_key_id
-# Then your secret_access_key
+# You will be prompted to enter your AWS_ACCESS_KEY_ID
+# Then your AWS_SECRET_ACCESS_KEY
 # ** Please note that copy pasta is allowed for ease of use **
 ```
 ### Buckets
@@ -39,9 +41,18 @@ To show basic information related to a specific bucket
 ./s3-analytics-[yourOS] show -b REQUIRED_BUCKET_NAME
 ```
 ### Cost and usage
-It is possible to list the cost and usage of every usage type, just type the following command:
+It is possible to list the cost and usage of every usage type per region.
 ```shell
-./s3-analytics-[yourOS] cost
+./s3-analytics-[yourOS] cost [-r (defaults to us-east-1)]
+
+# optional parameters
+# --start, -st : Start date in YYYY-MM-DD format
+# --end, -e : End date in YYYY-MM-DD format
+```
+
+It is also possible to see the projected total cost for the current month, per specified region.
+```shell
+./s3-analytics-[yourOS] cost-projection [-r (defaults to us-east-1)]
 ```
 ### Objects
 To list objects within a bucket

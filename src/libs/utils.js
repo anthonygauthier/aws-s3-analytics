@@ -28,7 +28,12 @@ function filter(array, value) {
   });
 }
 
+function round(number, digits) {
+  return parseFloat(number).toFixed(digits);
+}
+
 module.exports = {
   compare,
-  filter
+  filter,
+  round
 }

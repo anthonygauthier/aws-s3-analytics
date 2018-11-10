@@ -2,6 +2,7 @@ require('babel-polyfill');
 
 import expect from 'expect';
 import awsHelper from '../aws-helper';
+import moment from 'moment';
 
 describe('Tests concerning the aws-helper utility', () => {
   describe('Class utility', () => {
@@ -68,8 +69,12 @@ describe('Tests concerning the aws-helper utility', () => {
   });
 
   describe('Cost Explorer Functions', function () {
-    it('should return the costs for a bucket', async () => {
-      const response = await new awsHelper().getBucketCostAndUsage();
+    it('should return the costs for a region', async () => {
+      const response = await new awsHelper().getBucketCostAndUsage({ 
+        region: 'us-east-1', 
+        start: new moment().month(10).startOf('month').format("YYYY-MM-DD"), 
+        end: new moment().format("YYYY-MM-DD") 
+      });
       expect(response[0].AmortizedCost).toBeDefined();
       expect(response[0].BlendedCost).toBeDefined();
       expect(response[0].NetAmortizedCost).toBeDefined();
@@ -77,6 +82,13 @@ describe('Tests concerning the aws-helper utility', () => {
       expect(response[0].NormalizedUsageAmount).toBeDefined();
       expect(response[0].UnblendedCost).toBeDefined();
       expect(response[0].UsageQuantity).toBeDefined();
+    });
+
+    it('should return the costs projection for a region', async () => {
+      const response = await new awsHelper().calculateCostProjection('us-east-1');
+      expect(response.length).toBe(2);
+      expect(response[0].Description).toBe('TOTAL TO DATE');
+      expect(response[1].Description).toBe('PROJECTED TOTAL');
     });
   });
 });

@@ -12,7 +12,7 @@ class awsHelper {
   constructor() {
     this.credentialsPath = `${os.homedir()}/.aws`;
     this.currentBucket = this.resetBucket();
-    this.bucketObjects = {Token: null, Objects: []};
+    this.bucketObjects = { Token: null, Objects: [] };
   }
 
   /**
@@ -33,8 +33,8 @@ class awsHelper {
   async setCredentials(options) {
     return new Promise((resolve, reject) => {
       try {
-        if ((!process.env.ACCESS_KEY_ID && !process.env.SECRET_ACCESS_KEY) && (!options || !options.accessKeyId || !options.secretAccessKey)) {
-          throw ('No access keys defined. Either set the environment variables "ACCESS_KEY_ID" and "SECRET_ACCESS_KEY". Or provide the utility with the info.');
+        if ((!process.env.AWS_ACCESS_KEY_ID && !process.env.AWS_SECRET_ACCESS_KEY) && (!options || !options.accessKeyId || !options.secretAccessKey)) {
+          throw ('No access keys defined. Either set the environment variables "AWS_ACCESS_KEY_ID" and "AWS_SECRET_ACCESS_KEY". Or provide the utility with the info.');
         }
 
         if (!this.checkForCredentialsFile()) {
@@ -45,7 +45,7 @@ class awsHelper {
           Using the environment variables allow us to be able to use the utility on a Docker container that already 
           has these variables defined. It also provides the user an alternative way to supply the credentials.
         */
-        const creds = `[default]\naws_access_key_id = ${process.env.ACCESS_KEY_ID || options.accessKeyId}\naws_secret_access_key = ${process.env.SECRET_ACCESS_KEY || options.secretAccessKey}\n`
+        const creds = `[default]\naws_AWS_ACCESS_KEY_ID = ${process.env.AWS_ACCESS_KEY_ID || options.accessKeyId}\naws_AWS_SECRET_ACCESS_KEY = ${process.env.AWS_SECRET_ACCESS_KEY || options.secretAccessKey}\n`
 
         fs.writeFileSync(this.credentialsPath + '/credentials', creds);
 
@@ -114,14 +114,14 @@ class awsHelper {
 
   /**
    * Method that retrieves the cost for every usage type as well as calculating the total.
-   * @param {region: STRING, start: DATE, end: DATE} options 
+   * @param {region: string, start: date, end: date, granularity: string} options 
    */
   async getBucketCostAndUsage(options = { region: 'us-east-1', start: null, end: null }) {
     AWS.config.update({ region: options.region });
 
     options.granularity = options.granularity || 'MONTHLY';
-    options.start = options.start || moment().month(10).startOf('month').format("YYYY-MM-DD");
-    options.end = options.end || moment().format("YYYY-MM-DD");
+    options.start = options.start || moment().startOf('month').format("YYYY-MM-DD");
+    options.end = options.end || moment().endOf('month').format("YYYY-MM-DD");
 
     const costExplorer = new AWS.CostExplorer();
     const price = await costExplorer.getCostAndUsage({
@@ -152,7 +152,7 @@ class awsHelper {
           if (i === 0)
             totalObj[metric] = 0;
 
-          totalObj[metric] = totalObj[metric] + parseFloat(entity.Metrics[metric].Amount);
+          totalObj[metric] += parseFloat(entity.Metrics[metric].Amount);
 
           // add currency
           if (i === price.ResultsByTime[0].Groups.length - 1) {
@@ -204,11 +204,11 @@ class awsHelper {
    * @param {string (asc, desc)} order 
    * @param {string (plain, regexp)} filter 
    */
-  async getBucketObjects(options, storageType = "ALL", sortProp="LastModified", order="desc", filter) {
+  async getBucketObjects(options, storageType = "ALL", sortProp = "LastModified", order = "desc", filter) {
     const aws = new AWS.S3();
     const response = await aws.listObjectsV2(options).promise().catch(e => { logger.error(e.message) });
 
-    if(response) {
+    if (response) {
       this.bucketObjects.Objects = this.bucketObjects.Objects.concat(response.Contents.filter(el => (el.StorageClass === storageType || storageType === 'ALL')));
 
       if (response.IsTruncated) {
@@ -216,14 +216,69 @@ class awsHelper {
         options.ContinuationToken = response.NextContinuationToken;
         await this.myTestFunction(options);
       }
-      
+
       if (filter && filter.trim() !== '')
         this.bucketObjects.Objects = utils.filter(this.bucketObjects.Objects, filter);
 
-      this.bucketObjects.Objects = this.bucketObjects.Objects.map(el => {el.Size = bytes(el.Size); return el;})
-      
+      this.bucketObjects.Objects = this.bucketObjects.Objects.map(el => { el.Size = bytes(el.Size); return el; })
+
       return this.bucketObjects.Objects.sort(utils.compare(sortProp, order));
     }
+  }
+  /**
+   * Method that returns a gross estimation of how much the cost 
+   * would be at the end of the current month
+   * @param region: string
+   */
+  async calculateCostProjection(region="us-east-1") {
+    AWS.config.update({ region: region });
+    const costExplorer = new AWS.CostExplorer();
+    const endOfMonth = new moment().endOf('month').format('DD');
+    const now = new moment().format('DD');
+    const costs = await costExplorer.getCostAndUsage({
+      TimePeriod: { Start: new moment().startOf('month').format('YYYY-MM-DD'), End: new moment().endOf('month').format('YYYY-MM-DD') },
+      Granularity: 'MONTHLY',
+      GroupBy: [{
+        Key: "USAGE_TYPE",
+        Type: "DIMENSION"
+      }],
+      Metrics: [
+        "AmortizedCost",
+        "BlendedCost",
+        "NetAmortizedCost",
+        "NetUnblendedCost",
+        "NormalizedUsageAmount",
+        "UnblendedCost",
+        "UsageQuantity"
+      ]
+    }).promise();
+
+    let totalToDate = { Description: "TOTAL TO DATE" }, projectedTotal = { Description: "PROJECTED TOTAL"}, i = 0, currency = '';
+    for (const entity of costs.ResultsByTime[0].Groups) {
+      for (const metric in entity.Metrics) {
+        if (metric.includes('Cost')) {
+          if (i === 0) {
+            totalToDate[metric] = 0;
+            projectedTotal[metric] = 0;
+            currency = entity.Metrics[metric].Unit;
+          }
+          totalToDate[metric] += parseFloat(entity.Metrics[metric].Amount);
+
+          if(i === costs.ResultsByTime[0].Groups.length - 1) {
+            projectedTotal[metric] = parseFloat((endOfMonth * parseFloat(totalToDate[metric])) / now)
+          }
+        }
+      }
+      i++;
+    }
+    // Add currency, and round number to second decimal
+    for(const entity in totalToDate) {
+      if(entity !== 'Description') {
+        totalToDate[entity] = `${utils.round(totalToDate[entity], 2)} ${currency}`;
+        projectedTotal[entity] = `${utils.round(projectedTotal[entity], 2)} ${currency}`;
+      }
+    }
+    return [totalToDate, projectedTotal];
   }
 }
 
