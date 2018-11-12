@@ -38,42 +38,46 @@ function promptCredentials() {
   response = AWS.setCredentials(options).then(response => logger.info('Successfully saved credentials'));
 }
 
-if((process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) && !AWS.checkForCredentialsFile()) {
-  promptCredentials();
-}
-
-switch(command) {
-  case 'show': 
-    response = AWS.getBucketInfo({Bucket: argv.bucket}).then(bucket => {
-      console.table(argv.bucket, bucket);
-    }).catch(e => logger.error(e.message));
-    break;
-  case 'list':
-    response = AWS.detailedListBuckets(argv.sort, argv.order, argv.filter).then(buckets => {
-      console.table(buckets);
-    }).catch(e => logger.error(e.message));
-    break;
-  case 'cost-projection':
-    argv.region = argv.region || 'us-east-1';
-    response = AWS.calculateCostProjection(argv.region).then(costs => {
-      console.table(costs);
-    }).catch(e => logger.error(e.message));
-    break;
-  case 'cost':
-    argv.region = argv.region || 'us-east-1';
-    response = AWS.getBucketCostAndUsage({region: argv.region}).then(costs => {
-      console.table(costs);
-    }).catch(e => logger.error(e.message));
-    break;
-  case 'creds':
-    setCredentials();
-    break;
-  case 'objects':
-    response = AWS.getBucketObjects({Bucket: argv.bucket}, argv.storage, argv.sort, argv.order, argv.filter).then(objects => {
-      console.table(argv.bucket, objects);
-    }).catch(e => logger.error(e.message));
-    break;
-  default: 
-    logger.error(`Command "${command}" is unknown.`);
-    break;
+try {
+  if((!process.env.AWS_ACCESS_KEY_ID && !process.env.AWS_SECRET_ACCESS_KEY) && !AWS.checkForCredentialsFile()) {
+    promptCredentials();
+  }
+  
+  switch(command) {
+    case 'show': 
+      response = AWS.getBucketInfo({Bucket: argv.bucket}).then(bucket => {
+        console.table(argv.bucket, bucket);
+      }).catch(e => logger.error(e.message));
+      break;
+    case 'list':
+      response = AWS.detailedListBuckets(argv.sort, argv.order, argv.filter).then(buckets => {
+        console.table(buckets);
+      }).catch(e => logger.error(e.message));
+      break;
+    case 'cost-projection':
+      argv.region = argv.region || 'us-east-1';
+      response = AWS.calculateCostProjection(argv.region).then(costs => {
+        console.table(costs);
+      }).catch(e => logger.error(e.message));
+      break;
+    case 'cost':
+      argv.region = argv.region || 'us-east-1';
+      response = AWS.getBucketCostAndUsage({region: argv.region}).then(costs => {
+        console.table(costs);
+      }).catch(e => logger.error(e.message));
+      break;
+    case 'creds':
+      promptCredentials();
+      break;
+    case 'objects':
+      response = AWS.getBucketObjects({Bucket: argv.bucket}, argv.storage, argv.sort, argv.order, argv.filter).then(objects => {
+        console.table(argv.bucket, objects);
+      }).catch(e => logger.error(e.message));
+      break;
+    default: 
+      logger.error(`Command "${command}" is unknown.`);
+      break;
+  }
+} catch (e) {
+  logger.error(e.message);
 }

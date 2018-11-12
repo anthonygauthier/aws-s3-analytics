@@ -7,7 +7,6 @@
     "test": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist && export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha --exit dist/test/*.test.js",
     "compile": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist",
     "compileAndRun": "npm run compile && clear && node dist/app.js list",
-    "postinstall": "./node_modules/.bin/babel  ./src --experimental --source-maps-inline -d ./dist",
     "package": "pkg ./s3-analytics.js --out-path ./bin/"
   },
   "author": "Anthony Gauthier (delirius325)",
@@ -18,7 +17,6 @@
   "keywords": [],
   "dependencies": {
     "aws-sdk": "^2.346.0",
-    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-polyfill": "^6.26.0",
     "babel-preset-latest": "^6.24.1",
@@ -32,6 +30,7 @@
     "yargs": "^12.0.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "expect": "^23.6.0",
     "mocha": "^5.2.0"
   }

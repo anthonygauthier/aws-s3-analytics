@@ -45,7 +45,7 @@ class awsHelper {
           Using the environment variables allow us to be able to use the utility on a Docker container that already 
           has these variables defined. It also provides the user an alternative way to supply the credentials.
         */
-        const creds = `[default]\naws_AWS_ACCESS_KEY_ID = ${process.env.AWS_ACCESS_KEY_ID || options.accessKeyId}\naws_AWS_SECRET_ACCESS_KEY = ${process.env.AWS_SECRET_ACCESS_KEY || options.secretAccessKey}\n`
+        const creds = `[default]\naws_access_key_id = ${process.env.AWS_ACCESS_KEY_ID || options.accessKeyId}\naws_secret_access_key = ${process.env.AWS_SECRET_ACCESS_KEY || options.secretAccessKey}\n`
 
         fs.writeFileSync(this.credentialsPath + '/credentials', creds);
 
