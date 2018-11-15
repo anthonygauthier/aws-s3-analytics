@@ -13,7 +13,7 @@ It's been tested on the following operating systems:
 ## How to install
 1. Simply go to the [release section](https://github.com/delirius325/aws-s3-analytics/releases)
 2. Download the CLI according to your OS 
-3. Open up a terminal (or PowerShell, or GitBash, or CYGWIN, etc.) 
+3. Open up a terminal (or PowerShell/Command Prompt - on Windows) 
 4. ```cd``` to where you downloaded the CLI tool
 5. **Linux only** - you'll have to execute this command : ```chmod +x s3-analytics-linux```
 6. Execute the binary of your choice - command examples below.
