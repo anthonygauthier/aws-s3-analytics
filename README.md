@@ -1,6 +1,4 @@
 # AWS-S3-Analytics tool
-## Why
-This shell tool was created for the purpose of fulfilling [this very challenge](https://github.com/coveo/devops-coding-challenge).
 
 ## What does it run on?
 The tool was developed in JavaScript (NodeJS, ECMAScript2016 - compiled with Babel). It uses the AWS JavaScript SDK and other useful NodeJS open-source tools. Although it was developed on OSX, it has been packaged with [pkg](https://www.npmjs.com/package/pkg) and runs on Windows, Linux and OSX.
